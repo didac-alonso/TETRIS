@@ -39,6 +39,15 @@ class GameBoard:
     def has_token(self, location):
         return self.tauler[location.row][location.column] == '\u2b1b'
 
+
+    # def has_token(self, location, rectangle=Shape(1,1)):
+    #     for i in range(rectangle.height):
+    #         for j in range(rectangle.width):
+    #             print(location.row - i, location.column + j, self.tauler[location.row-i][location.column+j])
+    #             if self.tauler[location.row - i][location.column + j] != '\u2b1b':
+    #                 return False    
+    #     return True
+
     def search_tokens(self):
         tokens_location = []
         size = self.get_shape()
@@ -116,7 +125,7 @@ class GameBoard:
             for j in range(rectangle.width):    
                 if self.out_bounds(Location(location.row - i, location.column + j),tamany):
                     return False
-                elif self.is_empty(Location(location.row - i, location.column +j)):
+                elif not self.has_token(Location(location.row - i, location.column +j)):
                     return False
         return True
 
@@ -149,8 +158,24 @@ class GameBoard:
                 self.tauler[location.row - i][location.column + j] = '\u2b1c'
         return self
 
-    def is_empty(self,location):
-        return not self.has_token(location)
+    def is_empty(self,location, rectangle=Shape(1,1)):
+        size = self.get_shape()
+        location = self.transform_coordinates(location, size)
+        for i in range(rectangle.height):
+            for j in range(rectangle.width):
+                if self.has_token(Location(location.row - i, location.column + j)):
+                    return False
+        return True
+
+    def is_full(self,location, rectangle=Shape(1,1)):
+        size = self.get_shape()
+        location = self.transform_coordinates(location, size)
+        for i in range(rectangle.height):
+            for j in range(rectangle.width):
+                if not self.has_token(Location(location.row - i, location.column + j)):
+                    return False
+        return True
+
 
     def __repr__(self):
         tamany = self.get_shape()

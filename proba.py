@@ -16,5 +16,7 @@ def main():
     print(b)
     b.remove(Location(2,2),Shape(3,2))
     print(b)
+    print(b.is_empty(Location(0,0), Shape(3,3)))
+    
 
 main()
