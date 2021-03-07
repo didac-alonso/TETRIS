@@ -5,9 +5,7 @@ Location = collections.namedtuple('Location', 'row column')
 
 class GameBoard:
     #constructor
-    # Shape = collections.namedtuple('Shape', 'width height')
-    # Location = collections.namedtuple('Location', 'row column')
-
+    
     def __init__(self, tamany):
         self.height = tamany.height
         self.width = tamany.width
