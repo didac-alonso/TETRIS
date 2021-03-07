@@ -4,8 +4,8 @@ Shape = collections.namedtuple('Shape', 'width height')
 Location = collections.namedtuple('Location', 'row column')
 
 class GameBoard:
+
     #constructor
-    
     def __init__(self, tamany):
         self.height = tamany.height
         self.width = tamany.width
@@ -35,7 +35,6 @@ class GameBoard:
             if list(board_transposed[j][:]) == complete_column:
                 columns.append(j) 
         return columns
-
 
     def has_token(self, location):
         return self.tauler[location.row][location.column] == '\u2b1b'
@@ -148,5 +147,26 @@ class GameBoard:
         tokens = self.search_tokens()
         print(tokens, end="")
         return ""
-        
+
+    def row_counters(self):
+        size = self.get_shape()
+        row_counter = []        
+        for i in range(size.height-1, -1, -1):
+            counter = 0
+            for j in range(size.width):
+                if self.has_token(Location(i,j)):
+                    counter += 1
+            row_counter.append(counter)
+        return row_counter
+
+    def column_counters(self):
+        size = self.get_shape()
+        column_counter = []        
+        for j in range(size.width):
+            counter = 0
+            for i in range(size.height):
+                if self.has_token(Location(i,j)):
+                    counter += 1
+            column_counter.append(counter)
+        return column_counter
         
