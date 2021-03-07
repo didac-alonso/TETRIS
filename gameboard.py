@@ -102,7 +102,7 @@ class GameBoard:
     #         self.tauler[location.row][location.column] = '\u2b1b'
     #     return self
 
-    def fits(self, tamany, location, rectangle):
+    def fits_and_no_token(self, tamany, location, rectangle):
         for i in range(rectangle.height):
             for j in range(rectangle.width):    
                 if self.out_bounds(Location(location.row - i, location.column + j),tamany):
@@ -111,10 +111,19 @@ class GameBoard:
                     return False
         return True
 
-    def put(self, location, rectangle = Shape(1,1)):
+    def fits_and_fully_occuped(self, tamany, location, rectangle):
+        for i in range(rectangle.height):
+            for j in range(rectangle.width):    
+                if self.out_bounds(Location(location.row - i, location.column + j),tamany):
+                    return False
+                elif self.is_empty(Location(location.row - i, location.column +j)):
+                    return False
+        return True
+
+    def put(self, location, rectangle = Shape(1, 1)):
         tamany = self.get_shape()
         location = self.transform_coordinates(location, tamany)
-        if rectangle != Shape(1,1) and not self.fits(tamany, location, rectangle):
+        if rectangle != Shape(1,1) and not self.fits_and_no_token(tamany, location, rectangle):
             print("The rectangle cannot be put on the board.")         
             return self
         for i in range(rectangle.height):
@@ -129,10 +138,15 @@ class GameBoard:
                     self.tauler[location.row - i][location.column + j] = '\u2b1b'
         return self
 
-    def remove(self, location):
+    def remove(self, location,rectangle = Shape(1, 1)):
         tamany = self.get_shape()
         location = self.transform_coordinates(location, tamany)
-        self.tauler[location.row][location.column] = '\u2b1c'
+        if rectangle != Shape(1,1) and not self.fits_and_fully_occuped(tamany, location, rectangle):
+            print("The rectangle cannot be removed.")         
+            return self
+        for i in range(rectangle.height):
+            for j in range (rectangle.width):
+                self.tauler[location.row - i][location.column + j] = '\u2b1c'
         return self
 
     def is_empty(self,location):

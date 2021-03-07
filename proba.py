@@ -11,6 +11,10 @@ def main():
     b.put(Location(1,2), Shape(2,2))
     print(b)
     print(b.put(Location(2, 1)).put(Location(0, 2)).put(Location(0, 3)))
-    print("full rows: ", b.full_rows(), "; full columns: ", b.full_columns(), sep='')
+    print(b, "full rows: ", b.full_rows(), "; full columns: ", b.full_columns(), sep='')
+    b.remove(Location(0,0),Shape(2,2))
+    print(b)
+    b.remove(Location(2,2),Shape(3,2))
+    print(b)
 
 main()
