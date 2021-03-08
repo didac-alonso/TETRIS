@@ -5,7 +5,7 @@ Location = collections.namedtuple('Location', 'row column')
 
 class GameBoard:
 
-    #constructor
+    #constructor, gameboard is based in 3 parameters two integers: height, width and a matrix: board which represents the gameboard
     def __init__(self, tamany):
         self.height = tamany.height
         self.width = tamany.width
@@ -15,39 +15,46 @@ class GameBoard:
             for j in range(tamany.width):
                 fila.append('\u2b1c')
             matriu.append(fila)
-        self.tauler = matriu
+        self.board = matriu
 
+    # this action returns a list which contains the full rows are the full rows.
+    # It makes it in O(w), where w is the board width
     def full_rows(self):
         tamany = self.get_shape()
         rows = []
         complete_row = ['\u2b1b']*tamany.width
         for i in range(tamany.height):   
-            if self.tauler[i][:] == complete_row:
+            if self.board[i][:] == complete_row:
                 rows.append(tamany.height -i -1) 
         return rows
 
+    # this action returns a list which contains the full columns. It makes it in O(h),
+    # where h is the board height, to do so, i have to transpose the board in order to get
+    # its rows, thats because it isn't possible to acces by columns in a matrix 
     def full_columns(self):
         tamany = self.get_shape()
         columns = []
         complete_column = ['\u2b1b']*tamany.height
-        board_transposed = list(zip(*self.tauler))
+        board_transposed = list(zip(*self.board))
         for j in range(tamany.width):            
             if list(board_transposed[j][:]) == complete_column:
                 columns.append(j) 
         return columns
 
+    #this action returns whether a square has a token
     def has_token(self, location):
-        return self.tauler[location.row][location.column] == '\u2b1b'
+        return self.board[location.row][location.column] == '\u2b1b'
 
 
     # def has_token(self, location, rectangle=Shape(1,1)):
     #     for i in range(rectangle.height):
     #         for j in range(rectangle.width):
-    #             print(location.row - i, location.column + j, self.tauler[location.row-i][location.column+j])
-    #             if self.tauler[location.row - i][location.column + j] != '\u2b1b':
+    #             print(location.row - i, location.column + j, self.board[location.row-i][location.column+j])
+    #             if self.board[location.row - i][location.column + j] != '\u2b1b':
     #                 return False    
     #     return True
 
+    # this action returns a list which contains all the squares with token
     def search_tokens(self):
         tokens_location = []
         size = self.get_shape()
@@ -58,6 +65,9 @@ class GameBoard:
                     tokens_location.append(a)
         return tokens_location
 
+
+    # this action erases the tokens of the given rows, rows is a vector which contains
+    # the rows which are going to be cleared
     def clear_rows(self, rows):
         tamany = self.get_shape()
         # if row > tamany.height:
@@ -69,6 +79,9 @@ class GameBoard:
                 self.remove(Location(rows[i], j))
         return self
 
+
+    # this action erases the tokens of the given columns, columns 
+    # is a vector which contains the rows which are going to be cleared
     def clear_columns(self, columns):
         tamany = self.get_shape()
         # if column > tamany.height:
@@ -80,23 +93,30 @@ class GameBoard:
                 self.remove(Location(i, columns[j]))
         return self
 
+
+    #this actions returns whether a location is out of the gameboard
     def out_bounds(self, location,tamany):
         return location.row >= tamany.height or location.row < 0 or location.column < 0 or location.column >= tamany.width
 
+    #this action returns the shape of the gameboard
     def get_shape(self):
         width = self.width  
         h = self.height
         mesura = Shape(width, h)
         return mesura
 
+    # this private action, transform the coordinates of a given location
+    # to the coordinates that are being used to identify the rows and columns
+    # most actions use this one 
     def transform_coordinates(self, location, tamany):
         return Location(tamany.height-location.row - 1,location.column)    
 
+    #this action defines how to print the gameboard, it prints the matrix
     def __str__(self):
         size = self.get_shape()
         for i in range(size.height):
             for j in range(size.width):
-                print (self.tauler[i][j],end ="")
+                print (self.board[i][j],end ="")
             print()
         return ""
 
@@ -108,9 +128,11 @@ class GameBoard:
     #     elif self.has_token(location):
     #         print("The square is already occupied.")
     #     else:
-    #         self.tauler[location.row][location.column] = '\u2b1b'
+    #         self.board[location.row][location.column] = '\u2b1b'
     #     return self
 
+    # this action is used to discard the rectangles which can't be used to put 
+    # squares in the board
     def fits_and_no_token(self, tamany, location, rectangle):
         for i in range(rectangle.height):
             for j in range(rectangle.width):    
@@ -120,6 +142,8 @@ class GameBoard:
                     return False
         return True
 
+    # this action is used to discard the rectangles which can't be used to erase 
+    # squares in the board
     def fits_and_fully_occuped(self, tamany, location, rectangle):
         for i in range(rectangle.height):
             for j in range(rectangle.width):    
@@ -129,6 +153,8 @@ class GameBoard:
                     return False
         return True
 
+    # this action puts, if it's possible, a rectangle of tokens, which has its low-left corner in location
+    # if the rectangle is not specified, the action will place only one token, in the location 
     def put(self, location, rectangle = Shape(1, 1)):
         tamany = self.get_shape()
         location = self.transform_coordinates(location, tamany)
@@ -144,9 +170,13 @@ class GameBoard:
                     print("The square is already occupied.")
                     return self
                 else:
-                    self.tauler[location.row - i][location.column + j] = '\u2b1b'
+                    self.board[location.row - i][location.column + j] = '\u2b1b'
         return self
 
+
+    # this action erases, if it's possible; that is, if the rectangle is fully_occuped and it fits in the board,
+    # a rectangle of tokens, which has its low-left corner in location
+    # if the rectangle is not specified, the action will erase only one token, in the location 
     def remove(self, location,rectangle = Shape(1, 1)):
         tamany = self.get_shape()
         location = self.transform_coordinates(location, tamany)
@@ -155,9 +185,13 @@ class GameBoard:
             return self
         for i in range(rectangle.height):
             for j in range (rectangle.width):
-                self.tauler[location.row - i][location.column + j] = '\u2b1c'
+                self.board[location.row - i][location.column + j] = '\u2b1c'
         return self
 
+
+    # this action returns wether a rectangle is empty, the rectangle is specified by its shape
+    # and location is the low-left corner. If the rectangle is not specified, it considers
+    # only the location of low-left corner
     def is_empty(self,location, rectangle=Shape(1,1)):
         size = self.get_shape()
         location = self.transform_coordinates(location, size)
@@ -167,6 +201,10 @@ class GameBoard:
                     return False
         return True
 
+
+    # this action returns wether a rectangle is full, the rectangle is specified by its shape
+    # and location is the low-left corner. If the rectangle is not specified, it considers
+    # only the location of low-left corner
     def is_full(self,location, rectangle=Shape(1,1)):
         size = self.get_shape()
         location = self.transform_coordinates(location, size)
@@ -177,6 +215,8 @@ class GameBoard:
         return True
 
 
+    # this action changes de data shown by the type GameBoard, the data that must be shown is,
+    # the shape, and the squares with token
     def __repr__(self):
         tamany = self.get_shape()
         print(tamany.width,end='')
@@ -187,6 +227,8 @@ class GameBoard:
         print(tokens, end="")
         return ""
 
+
+    # this action counts how many tokens are in every row, it returns it in a list
     def row_counters(self):
         size = self.get_shape()
         row_counter = []        
@@ -198,6 +240,7 @@ class GameBoard:
             row_counter.append(counter)
         return row_counter
 
+    # this action counts how many tokens are in every column, it returns it in a list
     def column_counters(self):
         size = self.get_shape()
         column_counter = []        
