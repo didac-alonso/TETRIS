@@ -46,13 +46,18 @@ def play_game(player, blocks, show=True):
 def main():
     url = "https://www.cs.upc.edu/~jordicf/Teaching/AP2/"
     files = ["blocks1.in", "blocks2.in", "blocks3.in", "blocks4.in"]
-    for file in files:
-        blocks = read_file(url+file, url=True)
-        player = MyPlayer(20, 20)
-        nblocks = play_game(player, blocks, False)
-        print(nblocks, " blocks placed (out of ", len(blocks), ") for ", file, sep='')
-        if nblocks < len(blocks):
-            print("The block", blocks[nblocks], "cannot be placed.")
-        print(player, '\n')
+    %%time
+    methods = ["simple", "expert"]
+    width = range(10,16)
+    for w in width:
+        for f in files:
+            print(w, 'x', w, ' ', f, ': ', sep='', end='')
+            blocks = read_file(url+f, url=True)
+            for m in methods:
+                player = MyPlayer(w, w, method=m)
+                nblocks = play_game(player, blocks, False)
+                print(m,' (', nblocks, ' blocks) ', sep='', end='')
+            print()
+        print("-"*60)
 
 main()

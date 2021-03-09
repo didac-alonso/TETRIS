@@ -21,11 +21,26 @@ class MyPlayer:
 
     def play(self, block):
         size = self.board.get_shape()
-        for i in range (size.height):
-            for j in range(size.width):    
-                if self.board.is_empty(Location(i,j), block):
-                    return Location(i, j)
-        return None
+        if self.method == "simple":
+            for i in range (size.height):
+                for j in range(size.width):    
+                    if self.board.is_empty(Location(i,j), block):
+                        return Location(i, j)
+            return None
+        else:
+            provisional_loc = None
+            for i in range(size.height):
+                for j in range(size.width):
+                    if self.board.is_empty(Location(i,j),block):
+                        provisional_loc = Location(i,j)
+                        self.board.put(Location(i, j), block)
+                        if self.board.full_columns() != [] or self.board.full_rows() != []:
+                            self.board.remove(Location(i,j), block)
+                            return Location(i,j)
+                        self.board.remove(Location(i,j), block)
+            return provisional_loc
+            
+                    
     
     def is_legal(self, block):
         size = self.board.get_shape()
