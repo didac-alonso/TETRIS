@@ -197,7 +197,10 @@ class GameBoard:
         location = self.transform_coordinates(location, size)
         for i in range(rectangle.height):
             for j in range(rectangle.width):
-                if self.has_token(Location(location.row - i, location.column + j)):
+                try:
+                    if self.has_token(Location(location.row - i, location.column + j)):
+                        return False
+                except:
                     return False
         return True
 
@@ -210,7 +213,10 @@ class GameBoard:
         location = self.transform_coordinates(location, size)
         for i in range(rectangle.height):
             for j in range(rectangle.width):
-                if not self.has_token(Location(location.row - i, location.column + j)):
+                try:
+                    if not self.has_token(Location(location.row - i, location.column + j)):
+                        return False
+                except:
                     return False
         return True
 

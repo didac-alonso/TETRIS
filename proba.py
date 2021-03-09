@@ -1,4 +1,5 @@
 from gameboard import *
+from myplayer import *
 
 def main():
     b = GameBoard(Shape(4,3))
