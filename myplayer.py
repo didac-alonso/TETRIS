@@ -32,7 +32,8 @@ class MyPlayer:
             for i in range(size.height):
                 for j in range(size.width):
                     if self.board.is_empty(Location(i,j),block):
-                        provisional_loc = Location(i,j)
+                        if provisional_loc == None:
+                            provisional_loc = Location(i,j)
                         self.board.put(Location(i, j), block)
                         if self.board.full_columns() != [] or self.board.full_rows() != []:
                             self.board.remove(Location(i,j), block)
