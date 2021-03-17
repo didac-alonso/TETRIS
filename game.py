@@ -1,9 +1,9 @@
 from myplayer import *
-
 import urllib.request
 
 def read_file(file, url=True):
-    """It reads a file of integers representing shapes. Each pair of consecutive integers represents
+    """
+    It reads a file of integers representing shapes. Each pair of consecutive integers represents
     a shape (width and height). It returns a list of shapes. If url is not asserted, file is assumed
     to be the name of a local file.
     """
@@ -29,7 +29,8 @@ def read_file(file, url=True):
 
 
 def play_game(player, blocks, show=True):
-    """It plays the blocks puzzle using a pre-defined player. If show is asserted, the state of the player 
+    """
+    It plays the blocks puzzle using a pre-defined player. If show is asserted, the state of the player 
     is printed after placing each block. It returns the number of blocks that could be placed.
     """
     if show: print(player)
