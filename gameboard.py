@@ -54,17 +54,8 @@ class GameBoard:
                 columns.append(j) 
         return columns
 
-    # Private method, doesn't transform the coordinates, it's used by 
-    # a lot of methods which have transformed previously the coordinates.
-    def has_token(self, location):
-        """
-        This method returns whether a square has a token
-        Prec: the location is in the gameboard.
-        """
-        return self.board[location.row][location.column] == '\u2b1b'
 
-
-    # def has_token(self, location, rectangle=Shape(1,1)):
+    # def __has_token(self, location, rectangle=Shape(1,1)):
     #     for i in range(rectangle.height):
     #         for j in range(rectangle.width):
     #             print(location.row - i, location.column + j, self.board[location.row-i][location.column+j])
@@ -83,7 +74,7 @@ class GameBoard:
         size = self.get_shape()
         for i in range (size.height):
             for j in range (size.width):
-                if self.has_token(Location(i,j)):
+                if self.__has_token(Location(i,j)):
                     a = (size.height-1-i, j)
                     tokens_location.append(a)
         return tokens_location
@@ -104,6 +95,7 @@ class GameBoard:
             self.remove(Location(rows[i], 0),Shape(size.width, 1), False)
         return self
 
+
     # It uses the remove method in a entire column to erase it, using a for for moving beetwen the given columns,
     # it goes column by column removing without checking if they are full a rectangle with column-shape.
     def clear_columns(self, columns):
@@ -120,9 +112,9 @@ class GameBoard:
         return self
 
 
-    def out_bounds(self, location,size):
-        """This methods returns whether a location is out of the gameboard"""
-        return location.row >= size.height or location.row < 0 or location.column < 0 or location.column >= size.width
+    # def __out_bounds(self, location,size):
+    #     """This methods returns whether a location is out of the gameboard"""
+    #     return location.row >= size.height or location.row < 0 or location.column < 0 or location.column >= size.width
 
     def get_shape(self):
         """This method returns the shape of the gameboard"""
@@ -130,16 +122,7 @@ class GameBoard:
         h = self.height
         mesura = Shape(width, h)
         return mesura
-
-
-    def transform_coordinates(self, location, size):
-        """ 
-        This private method, transform the coordinates of a given location
-        to the coordinates that are being used to identify the rows and columns
-        most methods use this one. 
-        """
-        return Location(size.height-location.row - 1,location.column)    
-
+   
 
     def __str__(self):
         """
@@ -154,10 +137,10 @@ class GameBoard:
 
     # def put(self, location):
     #     size = self.get_shape()
-    #     location = self.transform_coordinates(location, size)
-    #     if self.out_bounds(location,size):
+    #     location = self.__transform_coordinates(location, size)
+    #     if self.__out_bounds(location,size):
     #         print("The square is out of bounds.")
-    #     elif self.has_token(location):
+    #     elif self.__has_token(location):
     #         print("The square is already occupied.")
     #     else:
     #         self.board[location.row][location.column] = '\u2b1b'
@@ -170,9 +153,9 @@ class GameBoard:
     # """
     #     for i in range(rectangle.height):
     #         for j in range(rectangle.width):    
-    #             if self.out_bounds(Location(location.row - i, location.column + j),size):
+    #             if self.__out_bounds(Location(location.row - i, location.column + j),size):
     #                 return False
-    #             elif self.has_token(Location(location.row - i, location.column + j)):
+    #             elif self.__has_token(Location(location.row - i, location.column + j)):
     #                 return False
     #     return True
 
@@ -183,9 +166,9 @@ class GameBoard:
     # """
     #     for i in range(rectangle.height):
     #         for j in range(rectangle.width):    
-    #             if self.out_bounds(Location(location.row - i, location.column + j),size):
+    #             if self.__out_bounds(Location(location.row - i, location.column + j),size):
     #                 return False
-    #             elif not self.has_token(Location(location.row - i, location.column +j)):
+    #             elif not self.__has_token(Location(location.row - i, location.column +j)):
     #                 return False
     #     return True
 
@@ -206,13 +189,13 @@ class GameBoard:
         # if not self.is_empty(location, rectangle):
         #     print("The rectangle cannot be put on the board.")         
         #     return self
-        location = self.transform_coordinates(location, size)
+        location = self.__transform_coordinates(location, size)
         for i in range(rectangle.height):
             for j in range(rectangle.width):    
-                # if self.out_bounds(Location(location.row - i, location.column + j),size):
+                # if self.__out_bounds(Location(location.row - i, location.column + j),size):
                 #     print("The square is out of bounds.")
                 #     return self
-                # if self.has_token(Location(location.row - i, location.column + j)):
+                # if self.__has_token(Location(location.row - i, location.column + j)):
                 # #     print("The square is already occupied.")
                 #     return self
                 # else:
@@ -234,11 +217,12 @@ class GameBoard:
             if not self.is_full(location, rectangle):
                 print("The rectangle cannot be removed.")         
                 return self
-        location = self.transform_coordinates(location, size)
+        location = self.__transform_coordinates(location, size)
         for i in range(rectangle.height):
             for j in range (rectangle.width):
                 self.board[location.row - i][location.column + j] = '\u2b1c'
         return self
+
 
     # This method returns false if the rectangle is not empty, and it asserts if it's out of bounds.
     def is_empty(self,location, rectangle=Shape(1,1)):
@@ -248,15 +232,16 @@ class GameBoard:
         only the location of low-left corner.
         """
         size = self.get_shape()
-        location = self.transform_coordinates(location, size)
+        location = self.__transform_coordinates(location, size)
         for i in range(rectangle.height):
             for j in range(rectangle.width):
                 try:
-                    if self.has_token(Location(location.row - i, location.column + j)):
+                    if self.__has_token(Location(location.row - i, location.column + j)):
                         return False
                 except:
                     assert 1 == 0, 'The square is out of bounds.'
         return True
+
 
     # This method returns false if the rectangle is not fully occuped, and it asserts if it's out of bounds.
     def is_full(self,location, rectangle=Shape(1,1)):
@@ -266,15 +251,16 @@ class GameBoard:
         only the location of low-left corner
         """
         size = self.get_shape()
-        location = self.transform_coordinates(location, size)
+        location = self.__transform_coordinates(location, size)
         for i in range(rectangle.height):
             for j in range(rectangle.width):
                 try:
-                    if not self.has_token(Location(location.row - i, location.column + j)):
+                    if not self.__has_token(Location(location.row - i, location.column + j)):
                         return False
                 except:
                     assert 1 == 0, 'The square is out of bounds.'
         return True
+
 
     # It changes the data shown by the type gameboard, it must be shown the shape, and squares with token,
     # it uses the search_tokens function in order to find the tokens, then it prints it.
@@ -304,10 +290,11 @@ class GameBoard:
         for i in range(size.height-1, -1, -1):
             counter = 0
             for j in range(size.width):
-                if self.has_token(Location(i,j)):
+                if self.__has_token(Location(i,j)):
                     counter += 1
             row_counter.append(counter)
         return row_counter
+
 
     # It goes column by column counting how many occupied square are in each one.
     def column_counters(self):
@@ -319,8 +306,26 @@ class GameBoard:
         for j in range(size.width):
             counter = 0
             for i in range(size.height):
-                if self.has_token(Location(i,j)):
+                if self.__has_token(Location(i,j)):
                     counter += 1
             column_counter.append(counter)
         return column_counter
         
+
+# Private method, doesn't transform the coordinates, it's used by 
+# a lot of methods which have transformed previously the coordinates.
+    def __has_token(self, location):
+        """
+        This method returns whether a square has a token
+        Prec: the location is in the gameboard.
+        """
+        return self.board[location.row][location.column] == '\u2b1b'
+
+
+    def __transform_coordinates(self, location, size):
+        """ 
+        This private method, transform the coordinates of a given location
+        to the coordinates that are being used to identify the rows and columns
+        most methods use this one. 
+        """
+        return Location(size.height-location.row - 1,location.column) 

@@ -10,6 +10,7 @@ class MyPlayer:
         self.board = GameBoard(Shape(width,height))
         self.method = method
     
+
     # It uses the put, method in order to use all the methods of the GameBoard class.
     def place_block(self, location, block):
         """This method puts a block if it's possible in a given location, it uses the put method from gameboard"""
@@ -23,13 +24,15 @@ class MyPlayer:
         self.board.clear_rows(full_row)    
         return self
         
+
     # It uses the print method from the GameBoard class.
     def __str__(self):
         """
-        This method uses the __str__ method of gameboard.
+        This method uses the __str__ method of GameBoard.
         """
         print(self.board)
         return ""
+
 
     # This method have the instructions which the AI follows, the simple places the block as bottom-left is possible, and the
     # expert does the same, but if puting one block it completes a row or column, it takes that location, to do so I try putting
