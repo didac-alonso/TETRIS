@@ -5,8 +5,9 @@ class MyPlayer:
 
     # Constructor, it uses the gameboard class to use all its methods, and a string which contains the skill of the bot.
     def __init__(self ,width, height, method = "simple"):
-        """This is the constructor, it, creates a gameboard, which needs a Shape, and you can define wether is
-            an expert AI or the simple one."""
+        """
+        This is the constructor, it, creates a gameboard, which needs a Shape, and you can define wether is an expert AI or the simple one.
+            """
         self.board = GameBoard(Shape(width,height))
         self.method = method
     
@@ -35,8 +36,9 @@ class MyPlayer:
 
 
     # This method have the instructions which the AI follows, the simple places the block as bottom-left is possible, and the
-    # expert does the same, but if puting one block it completes a row or column, it takes that location, to do so I try putting
-    # the block in the location and if it makes a column or row be full it returns that location.
+    # expert does the same, but if puting one block it completes a row or column, it takes that location, to do so it puts
+    # the block in the location, then it checks if it makes a column or row be full, it removes the block and if the block makes
+    # a column or row be full, returns the location.
     def play(self, block):
         """
         This method defines playing method, the simple one places the block as bottom-left is possible. 
@@ -71,12 +73,15 @@ class MyPlayer:
             return provisional_loc
             
                     
-    # This is a control method, it's used to indicate that the board is smaller than the block that
-    # is trying to place
+    # This is a control method, it uses logic conditions to determine wether a block is legal or not, that is
+    # if the block is a Shape type, if it's not bigger than the board and if its width and height > 0.
     def is_legal(self, block):
         """
-        This method returns a boolean which is true if
-        the block doesn't fit the board, empty or not.
+        This method returns a boolean which is true if the block fits the board, empty or not, the block is a Shape, and if it has heigth and width > 0.
         """
+        
         size = self.board.get_shape()
-        return block.width <= size.width or block.height <= size.height
+        try:
+            return (block.width <= size.width or block.height <= size.height) and (block.width > 0 and block.height > 0)
+        except:
+            return False
